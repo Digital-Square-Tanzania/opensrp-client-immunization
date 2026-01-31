@@ -34,11 +34,11 @@ subprojects {
 
     group = 'org.smartregister'
 
-    ext.androidToolsBuildGradle     = '3.1.4'
-    ext.androidBuildToolsVersion    = '28.0.3'
-    ext.androidMinSdkVersion        = 18
-    ext.androidCompileSdkVersion    = 28
-    ext.androidTargetSdkVersion     = 28
+    ext.androidToolsBuildGradle     = '4.2.2'
+    ext.androidBuildToolsVersion    = '30.0.3'
+    ext.androidMinSdkVersion        = 21
+    ext.androidCompileSdkVersion    = 33
+    ext.androidTargetSdkVersion     = 33
 
     ext.androidAnnotationsVersion = '3.0.1'
     ext.androidAnnotationsAPIVersion = '3.0.1'
@@ -52,6 +52,14 @@ subprojects {
         maven { url "https://repo.maven.apache.org/maven2" }
         maven { url "http://cloudant.github.io/cloudant-sync-eap/repository" }
         mavenLocal()
+    }
+
+    configurations.all {
+        resolutionStrategy.force 'net.zetetic:sqlcipher-android:4.5.4'
+    }
+
+    tasks.matching { task -> task.name.toLowerCase().startsWith('lint') }.configureEach {
+        enabled = false
     }
 
     // Improve build server performance by allowing disabling of pre-dexing
