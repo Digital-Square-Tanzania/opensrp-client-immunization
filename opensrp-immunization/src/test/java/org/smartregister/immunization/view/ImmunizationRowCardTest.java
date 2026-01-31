@@ -16,7 +16,7 @@ import org.robolectric.annotation.Config;
 import org.smartregister.commonregistry.CommonFtsObject;
 import org.smartregister.domain.Alert;
 import org.smartregister.domain.AlertStatus;
-import org.smartregister.domain.db.Event;
+import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.immunization.BaseUnitTest;
 import org.smartregister.immunization.ImmunizationLibrary;
 import org.smartregister.immunization.customshadows.FontTextViewShadow;
@@ -60,7 +60,7 @@ public class ImmunizationRowCardTest extends BaseUnitTest {
                 VaccineTest.EVENTID, VaccineTest.FORMSUBMISSIONID, 0, new Date());
         Event event = new Event();
         event.setEventId("1");
-        event.setDateCreated(new DateTime());
+        event.setEventDate(new Date());
 
         PowerMockito.mockStatic(ImmunizationLibrary.class);
         ImmunizationLibrary immunizationLibrary = Mockito.mock(ImmunizationLibrary.class);

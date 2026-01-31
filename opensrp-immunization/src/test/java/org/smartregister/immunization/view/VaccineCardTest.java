@@ -67,7 +67,7 @@ public class VaccineCardTest extends BaseUnitTest {
         Mockito.when(appProperties.hasProperty(IMConstants.APP_PROPERTIES.VACCINE_EXPIRED_ENTRY_ALLOW)).thenReturn(true);
         Mockito.when(appProperties.getPropertyBoolean(IMConstants.APP_PROPERTIES.VACCINE_EXPIRED_ENTRY_ALLOW)).thenReturn(true);
         Mockito.when(context_.getAppProperties()).thenReturn(appProperties);
-        ImmunizationLibrary.init(context_, Mockito.mock(Repository.class), null, BuildConfig.VERSION_CODE, 1);
+        ImmunizationLibrary.init(context_, Mockito.mock(Repository.class), null, 1, 1);
 
         Alert alert = new Alert("", "", "", AlertStatus.normal, "", "");
         VaccineWrapper wrapper = new VaccineWrapper();

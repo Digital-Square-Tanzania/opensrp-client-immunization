@@ -26,7 +26,7 @@ import org.smartregister.CoreLibrary;
 import org.smartregister.commonregistry.CommonFtsObject;
 import org.smartregister.domain.Alert;
 import org.smartregister.domain.AlertStatus;
-import org.smartregister.domain.db.Event;
+import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.immunization.BaseUnitTest;
 import org.smartregister.immunization.ImmunizationLibrary;
 import org.smartregister.immunization.customshadows.FontTextViewShadow;
@@ -83,7 +83,7 @@ public class ServiceRowCardTest extends BaseUnitTest {
         serviceRecord.setEventId(magicOne);
         Event event = new Event();
         event.setEventId(magicOne);
-        event.setDateCreated(new DateTime());
+        event.setEventDate(new Date());
 
         EventClientRepository eventClientRepository = Mockito.mock(EventClientRepository.class);
 
