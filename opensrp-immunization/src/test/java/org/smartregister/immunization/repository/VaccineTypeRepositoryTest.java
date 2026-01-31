@@ -4,9 +4,9 @@ import android.content.ContentValues;
 
 import junit.framework.Assert;
 
-import net.sqlcipher.Cursor;
-import net.sqlcipher.MatrixCursor;
-import net.sqlcipher.database.SQLiteDatabase;
+import android.database.Cursor;
+import android.database.MatrixCursor;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
 import org.junit.Before;
 import org.junit.Test;

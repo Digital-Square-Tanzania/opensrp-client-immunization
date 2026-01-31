@@ -3,7 +3,7 @@ package org.smartregister.immunization.util;
 import android.content.Context;
 import android.util.Log;
 
-import net.sqlcipher.database.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
