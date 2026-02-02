@@ -112,7 +112,6 @@ dependencies {
     }
 
     implementation 'net.zetetic:sqlcipher-android:4.5.4'
-
     implementation 'androidx.annotation:annotation:1.6.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.fragment:fragment:1.5.7'
