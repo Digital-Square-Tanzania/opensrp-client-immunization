@@ -16,6 +16,13 @@ buildscript {
 apply plugin: 'com.android.library'
 apply plugin: 'jacoco'
 apply plugin: 'com.github.kt3k.coveralls'
+apply plugin: 'maven-publish'
+
+def githubProperties = new Properties()
+def githubPropertiesFile = rootProject.file("github.properties")
+if (githubPropertiesFile.exists()) {
+    githubProperties.load(new FileInputStream(githubPropertiesFile))
+}
 
 jacoco {
     toolVersion = "0.8.3"
@@ -27,6 +34,14 @@ allprojects {
         maven { url "https://s3.amazonaws.com/repo.commonsware.com" }
         mavenCentral()
         mavenLocal()
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/Digital-Square-Tanzania/opensrp-client-core")
+            credentials {
+                username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")
+                password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")
+            }
+        }
     }
 }
 
@@ -41,6 +56,7 @@ android {
         targetSdkVersion androidTargetSdkVersion
         versionCode Integer.parseInt(project.VERSION_CODE)
         versionName project.VERSION_NAME
+        project.archivesBaseName = POM_SETTING_ARTIFACT_ID
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -158,6 +174,41 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
 
 coveralls {
     jacocoReportPath = "${buildDir}/reports/jacoco/jacocoRootReport/merged.xml"
+}
+
+def getVersionName = { ->
+    return VERSION_NAME
+}
+
+def getArtificatId = { ->
+    return POM_SETTING_ARTIFACT_ID
+}
+
+publishing {
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/Digital-Square-Tanzania/opensrp-client-immunization")
+            credentials {
+                username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")
+                password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")
+            }
+        }
+    }
+
+    publications {
+        bar(MavenPublication) {
+            groupId 'org.smartregister'
+            artifactId getArtificatId()
+            version getVersionName()
+
+            // Use the Android release component so Gradle builds the correct AAR before publishing
+            afterEvaluate {
+                from components.release
+            }
+        }
+    }
 }
 
 apply from: '../maven.gradle'
