@@ -18,6 +18,12 @@ apply plugin: 'jacoco'
 apply plugin: 'com.github.kt3k.coveralls'
 apply plugin: 'maven-publish'
 
+def githubProperties = new Properties()
+def githubPropertiesFile = rootProject.file("github.properties")
+if (githubPropertiesFile.exists()) {
+    githubProperties.load(new FileInputStream(githubPropertiesFile))
+}
+
 jacoco {
     toolVersion = "0.8.3"
 }
@@ -28,6 +34,14 @@ allprojects {
         maven { url "https://s3.amazonaws.com/repo.commonsware.com" }
         mavenCentral()
         mavenLocal()
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/Digital-Square-Tanzania/opensrp-client-core")
+            credentials {
+                username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")
+                password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")
+            }
+        }
     }
 }
 
@@ -162,12 +176,6 @@ coveralls {
     jacocoReportPath = "${buildDir}/reports/jacoco/jacocoRootReport/merged.xml"
 }
 
-def githubProperties = new Properties()
-def githubPropertiesFile = rootProject.file("github.properties")
-if (githubPropertiesFile.exists()) {
-    githubProperties.load(new FileInputStream(githubPropertiesFile))
-}
-
 def getVersionName = { ->
     return VERSION_NAME
 }
@@ -194,34 +202,10 @@ publishing {
             groupId 'org.smartregister'
             artifactId getArtificatId()
             version getVersionName()
-            artifact("$buildDir/outputs/aar/${getArtificatId()}-release.aar")
 
-            pom.withXml {
-                final dependenciesNode = asNode().appendNode('dependencies')
-                ext.addDependency = { Dependency dep, String scope ->
-                    if (dep.group == null || dep.version == null || dep.name == null || dep.name == 'unspecified')
-                        return
-                    final dependencyNode = dependenciesNode.appendNode('dependency')
-                    dependencyNode.appendNode('groupId', dep.group)
-                    dependencyNode.appendNode('artifactId', dep.name)
-                    dependencyNode.appendNode('version', dep.version)
-                    dependencyNode.appendNode('scope', scope)
-                    if (!dep.transitive) {
-                        final exclusionNode = dependencyNode.appendNode('exclusions').appendNode('exclusion')
-                        exclusionNode.appendNode('groupId', '*')
-                        exclusionNode.appendNode('artifactId', '*')
-                    } else if (!dep.properties.excludeRules.empty) {
-                        final exclusionsNode = dependencyNode.appendNode('exclusions')
-                        dep.properties.excludeRules.each { ExcludeRule rule ->
-                            def exclusion = exclusionsNode.appendNode('exclusion')
-                            exclusion.appendNode('groupId', rule.group ?: '*')
-                            exclusion.appendNode('artifactId', rule.module ?: '*')
-                        }
-                    }
-                }
-                configurations.compile.getDependencies().each { dep -> addDependency(dep, 'compile') }
-                configurations.api?.getDependencies()?.each { dep -> addDependency(dep, 'compile') }
-                configurations.implementation.getDependencies().each { dep -> addDependency(dep, 'compile') }
+            // Use the Android release component so Gradle builds the correct AAR before publishing
+            afterEvaluate {
+                from components.release
             }
         }
     }
